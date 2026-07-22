@@ -1,0 +1,30 @@
+name: Deploy SQL - Oracle SIT
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-oracle:
+    name: Ejecutar script Oracle SIT
+    runs-on: [self-hosted, oracle-sit]
+
+    steps:
+      - name: Descargar código del repositorio
+        uses: actions/checkout@v4
+
+      - name: Validar SQL*Plus
+        shell: cmd
+        run: |
+          sqlplus -V
+
+      - name: Validar conectividad con Oracle
+        shell: powershell
+        run: |
+          Test-NetConnection `
+            -ComputerName "${{ secrets.ORACLE_HOST }}" `
+            -Port "${{ secrets.ORACLE_PORT }}"
+
+      - name: Ejecutar script SQL
+        shell: cmd
+        run: |
+          sqlplus -L "${{ secrets.ORACLE_USER }}/${{ secrets.ORACLE_PASSWORD }}@${{ secrets.ORACLE_HOST }}:${{ secrets.ORACLE_PORT }}/${{ secrets.ORACLE_SERVICE }}" @sql\create_table.sql
