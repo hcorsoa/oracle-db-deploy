@@ -6,7 +6,7 @@ on:
 jobs:
   deploy-oracle:
     name: Ejecutar script Oracle SIT
-    runs-on: self-hosted
+    runs-on: [self-hosted, oracle-sit]
 
     steps:
       - name: Descargar código del repositorio
